@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link href=./variables.css rel=stylesheet type="text/css">
+   <meta name="msapplication-TileColor" content="#000f33">
+   <meta name="theme-color" content="#fff8e0ff">
+   <script type="application/javascript" src="./vosk.js"></script>
+   <title>Speak browser speak!!!</title>
+</head>
+<body>
+  <p-index></p-index>
+  <script rel=preload type=module>
+    Promise.all([
+      import('./Index.js').then(module => ['p-index', module.default])
+    ]).then(elements => elements.forEach(element => {
+        // don't define already existing customElements
+        if (element && !customElements.get(element[0])) customElements.define(...element)
+    }))
+  </script>
+</body>
+</html>
