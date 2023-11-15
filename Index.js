@@ -43,6 +43,7 @@ export default class Index extends HTMLElement {
             this.renderOl()
           case id === 'clear':
             if (this.textarea) this.textarea.value = ''
+            this.lastVoskValue = ''
             break
           case id === 'speak':
             this.speak(this.textarea?.value)
@@ -82,7 +83,7 @@ export default class Index extends HTMLElement {
       }
       this.mouseDownEventListener = async event => {
         if (this.voskModel) {
-          this.lastVoskValue = this.textarea?.value || '';
+          this.lastVoskValue = this.lastVoskValue || this.textarea?.value || '';
           (await this.voskModel).start()
         }
       }
