@@ -58,7 +58,7 @@ export default class Index extends HTMLElement {
         }
       }
       this.keydownListener = event => {
-        if (event.key === 'r') {
+        if (event.key === 'r' && !this.recordBtn?.classList.contains('active')) {
           this.recordBtn?.classList.add('active')
           this.mouseDownEventListener(event)
         }
@@ -83,7 +83,11 @@ export default class Index extends HTMLElement {
       }
       this.mouseDownEventListener = async event => {
         if (this.voskModel) {
-          this.lastVoskValue = this.lastVoskValue || this.textarea?.value || '';
+          if (!this.lastVoskValue) {
+            this.lastVoskValue = this.textarea?.value || '';
+          } else if (this.textarea) {
+            this.textarea.value = this.lastVoskValue
+          }
           (await this.voskModel).start()
         }
       }
@@ -168,15 +172,21 @@ export default class Index extends HTMLElement {
         min-height: var(--min-height, 100dvh);
         max-height: 100dvh;
         & > header {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5em;
           grid-area: header;
           padding: 1em;
-          & > select {
-            background-color: var(--color);
-            cursor: pointer;
-            font-size: 1.3em;
-            height: 4em;
-            padding: 1em;
-            width: 100%;
+          & > div{
+            flex-grow: 1;
+            & > select {
+              background-color: var(--color);
+              cursor: pointer;
+              font-size: 1.3em;
+              height: 4em;
+              padding: 1em;
+              width: 100%;
+            }
           }
         }
         & > main {
@@ -268,13 +278,16 @@ export default class Index extends HTMLElement {
       const voices = await this.getVoices()
       this.section.innerHTML = /* html */`
       <header>
-      <label for="language-select">Choose a language:</label>
-      <select name="languages" id="language-select">
-      ${voices.map(voice => `<option ${voice.lang === this.activeLanguage
-        ? 'selected'
-        : ''
-      } value="${voice.lang} - ${voice.name}" name="${voice.name}" lang="${voice.lang}">${voice.lang} - ${voice.name}</option>`)}
-      </select>
+        <iframe class=gh-button src="https://ghbtns.com/github-btn.html?user=Weedshaker&amp;repo=Speech&amp;type=star&amp;count=true&amp;size=large" scrolling="0" width="160px" height="30px" frameborder="0"></iframe>
+        <div>
+          <label for="language-select">Choose a language:</label>
+          <select name="languages" id="language-select">
+          ${voices.map(voice => `<option ${voice.lang === this.activeLanguage
+            ? 'selected'
+            : ''
+          } value="${voice.lang} - ${voice.name}" name="${voice.name}" lang="${voice.lang}">${voice.lang} - ${voice.name}</option>`)}
+          </select>
+        </div>
       </header>
       <main>
       <label for="speech-list-container">Click an element to speak:</label>
@@ -286,7 +299,7 @@ export default class Index extends HTMLElement {
         <div>
           <button id="record">${this.recordIcon}</button>
           <button id="speak">Speak</button>
-          <button id="add-to-list">Add to List</button>
+          <button id="add-to-list">Add</button>
           <button id="clear">Clear</button>
         </div>
       </footer>
@@ -373,7 +386,7 @@ export default class Index extends HTMLElement {
             return word.text ? word.text + '. ' : ''
           }, '')
           // @ts-ignore
-          this.lastVoskValue = this.textarea?.value
+          this.lastVoskValue = this.textarea?.value || ''
           if (this.textarea) this.textarea.scrollTop = this.textarea.scrollHeight
       });
       recognizer.on("partialresult", (message) => {
@@ -432,7 +445,7 @@ export default class Index extends HTMLElement {
     }
     
     get select () {
-      return this.shadowRoot?.querySelector('header > select')
+      return this.shadowRoot?.querySelector('header > div > select')
     }
     
     get main () {
