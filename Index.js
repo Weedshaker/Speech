@@ -54,20 +54,26 @@ export default class Index extends HTMLElement {
         case id === 'delete':
           this.deleteText(Array.from(target.parentElement.parentElement.parentElement.children).indexOf(target.parentElement.parentElement))
           this.renderOl()
+        case id === 'record':
+          this.recordBtn?.classList.toggle('active')
+          if (this.recordBtn?.classList.contains('active')) {
+            this.mouseDownEventListener(event)
+          } else {
+            this.mouseUpEventListener(event)
+          }
           break
       }
     }
     this.keydownListener = event => {
-      if (event.key === 'r' && !this.recordBtn?.classList.contains('active')) {
-        this.recordBtn?.classList.add('active')
-        this.mouseDownEventListener(event)
-      }
+      if (this.textarea?.matches(':focus')) return
+      // @ts-ignore
+      if (event.key === 'r' && !this.recordBtn?.classList.contains('active')) this.recordBtn?.click()
     }
     this.keyupListener = event => {
       if (this.textarea?.matches(':focus')) return
-      if (event.key === 'r') {
-        this.recordBtn?.classList.remove('active')
-        return this.mouseUpEventListener(event)
+      if (event.key === 'r' && this.recordBtn?.classList.contains('active')) {
+        // @ts-ignore
+        this.recordBtn?.click()
       } else if (event.key === 's') {
         // @ts-ignore
         return this.speakBtn?.click()
@@ -103,8 +109,11 @@ export default class Index extends HTMLElement {
     }
     this.select?.addEventListener('change', this.changeEventListener)
     this.addEventListener('click', this.clickEventListener)
+    /*
+    // mousedown and up did not work on mobile, replaced at click event listener
     if (this.recordBtn) this.recordBtn.addEventListener('mousedown', this.mouseDownEventListener)
     if (this.recordBtn) this.recordBtn.addEventListener('mouseup', this.mouseUpEventListener)
+    */
     document.addEventListener('keydown', this.keydownListener)
     document.addEventListener('keyup', this.keyupListener)
   }
@@ -112,8 +121,10 @@ export default class Index extends HTMLElement {
   disconnectedCallback () {
     this.select?.removeEventListener('change', this.changeEventListener)
     this.removeEventListener('click', this.clickEventListener)
+    /*
     if (this.recordBtn) this.recordBtn.removeEventListener('mousedown', this.mouseDownEventListener)
     if (this.recordBtn) this.recordBtn.removeEventListener('mouseup', this.mouseUpEventListener)
+    */
     document.removeEventListener('keydown', this.keydownListener)
     document.removeEventListener('keyup', this.keyupListener)
   }
