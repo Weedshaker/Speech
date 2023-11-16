@@ -342,9 +342,16 @@ export default class Index extends HTMLElement {
   }
   
   getVoices () {
+    const sort = arr => arr.sort((a, b) => {
+      const nameA = a.name.toUpperCase()
+      const nameB = b.name.toUpperCase()
+      if (nameA < nameB) return -1
+      if (nameA > nameB) return 1
+      return 0
+    })
     return this.getVoicesPromise || (this.getVoicesPromise = speechSynthesis.getVoices()?.length
-    ? Promise.resolve(speechSynthesis.getVoices())
-    : new Promise(resolve => speechSynthesis.addEventListener('voiceschanged', event => resolve(speechSynthesis.getVoices()), { once: true })))
+    ? Promise.resolve(sort(Array.from(speechSynthesis.getVoices())))
+    : new Promise(resolve => speechSynthesis.addEventListener('voiceschanged', event => resolve(sort(Array.from(speechSynthesis.getVoices()))), { once: true })))
   }
   
   setText (key, value) {
