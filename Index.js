@@ -262,7 +262,7 @@ export default class Index extends HTMLElement {
             }
           }
         }
-        & textarea:focus {
+        & textarea:focus, & textarea:has(+ div > button#record:active), & textarea:has(+ div > button#record.active) {
           height: 25dvh;
         }
       }
