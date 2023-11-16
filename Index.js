@@ -343,10 +343,10 @@ export default class Index extends HTMLElement {
   
   getVoices () {
     const sort = arr => arr.sort((a, b) => {
-      const nameA = a.name.toUpperCase()
-      const nameB = b.name.toUpperCase()
-      if (nameA < nameB) return -1
-      if (nameA > nameB) return 1
+      const langA = a.lang.toUpperCase()
+      const langB = b.lang.toUpperCase()
+      if (langA < langB) return -1
+      if (langA > langB) return 1
       return 0
     })
     return this.getVoicesPromise || (this.getVoicesPromise = speechSynthesis.getVoices()?.length
