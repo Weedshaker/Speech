@@ -248,8 +248,9 @@ export default class Index extends HTMLElement {
           background-color: var(--color);
           box-sizing: border-box;
           font-size: 1.1em;
-          height: 25dvh;
+          height: 10dvh;
           padding: 1em;
+          transition: height 0.3s ease-out;
           width: 100%;
           & + div {
             display: flex;
@@ -260,6 +261,9 @@ export default class Index extends HTMLElement {
               background-color: coral;
             }
           }
+        }
+        & textarea:focus {
+          height: 25dvh;
         }
       }
     }
