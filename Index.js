@@ -316,7 +316,9 @@ export default class Index extends HTMLElement {
     }
     
     getVoices () {
-      return this.getVoicesPromise || (this.getVoicesPromise = new Promise(resolve => speechSynthesis.addEventListener('voiceschanged', event => resolve(Array.from(speechSynthesis.getVoices())), { once: true })))
+      return this.getVoicesPromise || (this.getVoicesPromise = speechSynthesis.getVoices()?.length
+                                       ? Promise.resolve(speechSynthesis.getVoices())
+                                       : new Promise(resolve => speechSynthesis.addEventListener('voiceschanged', event => resolve(Array.from(speechSynthesis.getVoices())), { once: true })))
     }
     
     setText (key, value) {
