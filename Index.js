@@ -39,7 +39,7 @@ export default class Index extends HTMLElement {
             this.textarea?.focus()
             break
           }
-          this.setText(undefined, `<div><span>${this.textarea?.value}</span>${this.select?.outerHTML}<div id="delete">X</div></div>`)
+          this.setText(undefined, `<div><span>${this.textarea?.value}</span>${this.select?.outerHTML}<div id="edit">&#9998;</div><div id="delete">X</div></div>`)
           this.renderOl()
         case id === 'clear':
           if (this.textarea) this.textarea.value = ''
@@ -51,9 +51,15 @@ export default class Index extends HTMLElement {
         case id.includes('text-'):
           this.speak(target.querySelector('div > span'))
           break
+        case id === 'edit':
+          // @ts-ignore
+          this.textarea.value += target.parentElement.querySelector('div > span').textContent || ''
+          this.textarea?.focus()
+          break
         case id === 'delete':
           this.deleteText(Array.from(target.parentElement.parentElement.parentElement.children).indexOf(target.parentElement.parentElement))
           this.renderOl()
+          break
         case id === 'record':
           this.recordBtn?.classList.toggle('active')
           if (this.recordBtn?.classList.contains('active')) {
@@ -70,22 +76,27 @@ export default class Index extends HTMLElement {
       if (event.key === 'r' && !this.recordBtn?.classList.contains('active')) this.recordBtn?.click()
     }
     this.keyupListener = event => {
-      if (this.textarea?.matches(':focus')) return
-      if (event.key === 'r' && this.recordBtn?.classList.contains('active')) {
+      if (this.textarea?.matches(':focus')) {
+        if (event.key === 'Escape') this.textarea?.blur()
+      } else if (event.key === 'r' && this.recordBtn?.classList.contains('active')) {
         // @ts-ignore
         this.recordBtn?.click()
       } else if (event.key === 's') {
         // @ts-ignore
-        return this.speakBtn?.click()
+        this.speakBtn?.click()
       } else if (event.key === 'a') {
         // @ts-ignore
-        return this.addToListBtn?.click()
+        this.addToListBtn?.click()
       } else if (event.key === 'c') {
         // @ts-ignore
-        return this.clearBtn?.click()
+        this.clearBtn?.click()
+      } else if (event.key === 't') {
+        // @ts-ignore
+        this.textarea?.focus()
+      } else if (!isNaN(event.key)) {
+        let span
+        if ((span = this.ol?.querySelector(`#text-${event.key - 1} > div > span`))) this.speak(span)
       }
-      let span
-      if ((span = this.ol?.querySelector(`#text-${event.key - 1} > div > span`))) this.speak(span)
     }
     this.mouseDownEventListener = async event => {
       if (this.voskModel) {
