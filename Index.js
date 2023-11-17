@@ -229,14 +229,21 @@ export default class Index extends HTMLElement {
             padding: 0.5em;
             width: 100%;
             & > div {
-              align-items: center;
+              align-items: flex-start;
               display: flex;
               gap: 0.5em;
-              justify-content: space-between;
+              justify-content: right;
+              & > span {
+                word-break: break-word;
+                margin-right: auto;
+                max-height: 5em;
+                min-width: min(100%, 25dvw);
+                overflow-y: auto;
+              }
               & > select {
                 cursor: pointer;
+                min-width: min(100%, 25dvw);
                 padding: 1em;
-                width: 100%;
               }
               & > div {
                 display: flex;
@@ -302,6 +309,9 @@ export default class Index extends HTMLElement {
               padding: 0.5em;
             }
           }
+        }
+        & > main > ol  > li  > div  > select {
+          max-width: min(100%, 35dvw);
         }
       }
     }
